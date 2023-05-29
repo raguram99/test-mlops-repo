@@ -1,0 +1,15 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 355959503504.dkr.ecr.ap-south-1.amazonaws.com
+      - |
+        set -e
+        if aws ecr describe-repositories --repository-name config-parse-repo-test01 >/dev/null 2>&1; then
+          echo "ECR repository already exists"
+        else
+          echo "ECR repository does not exist, creating it now"
+          aws ecr create-repository --repository-name config-parse-repo-test01
+        fi
+      - |
